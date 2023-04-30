@@ -1,3 +1,3 @@
-import { atom } from "jotai"
+import { atom } from "jotai";
 
-const test = atom(null)
+export const isMapLoadedAtom = atom(false);
