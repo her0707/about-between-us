@@ -20,7 +20,7 @@ const Header = () => {
             src="/icons/arrow-left-icon.svg"
             width="18"
             height="16"
-            alt="arrow-leff-icon"
+            alt="arrow-left-icon"
           />
         </a>
       </div>
