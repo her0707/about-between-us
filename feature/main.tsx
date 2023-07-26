@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import KaKaoMap from "@/components/kakao-map";
 import Input from "@/components/common/input";
 import Button from "components/common/button";
-import useGetCurrentPosition from "@/app/hooks/useGetCurrentPosition";
+import useGetCurrentPosition from "@/hooks/useGetCurrentPosition";
 
 export default function Main() {
   const router = useRouter();
