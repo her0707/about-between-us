@@ -12,7 +12,7 @@ const SearchIcon = ({ width = "1em", height = "1em", onClick }: Props) => {
       <svg
         stroke="currentColor"
         fill="currentColor"
-        stroke-width="0"
+        strokeWidth="0"
         viewBox="0 0 24 24"
         height={height}
         width={width}

@@ -2,7 +2,7 @@
 
 import { useAtom } from "jotai";
 import Script from "next/script";
-import { useEffect } from "react";
+import { useEffect, useCallback } from "react";
 
 import { isMapLoadedAtom } from "@/store/global";
 
@@ -19,7 +19,7 @@ interface Props {
 export default function KaKaoMap({ defaultCoords }: Props) {
   const [isMapLoaded, setIsMapLoaded] = useAtom(isMapLoadedAtom);
 
-  const init = () => {
+  const init = useCallback(() => {
     const container = document.getElementById("map");
     const options = {
       center: new window.kakao.maps.LatLng(
@@ -30,11 +30,11 @@ export default function KaKaoMap({ defaultCoords }: Props) {
     };
 
     const map = new window.kakao.maps.Map(container, options);
-  };
+  }, [defaultCoords.lat, defaultCoords.lng]);
 
   useEffect(() => {
     if (isMapLoaded) init();
-  }, [isMapLoaded]);
+  }, [init, isMapLoaded]);
 
   return (
     <>
