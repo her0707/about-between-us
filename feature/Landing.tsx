@@ -1,4 +1,4 @@
-import Image from "next/image";
+import Button from "@/components/common/button";
 
 const Landing = () => {
   return (
@@ -12,14 +12,9 @@ const Landing = () => {
         </h4>
       </div>
 
-      <a className="bg-white w-14 h-14 p-2 rounded-xl  animate-fadeIn cursor-pointer">
-        <Image
-          src="/icons/kakao_map.png"
-          alt="kakao-map-icon"
-          width="64"
-          height="64"
-        />
-      </a>
+      <Button color="black" size="md" className="rounded-xl font-bold">
+        위치 등록하기
+      </Button>
     </div>
   );
 };
