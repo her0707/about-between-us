@@ -8,8 +8,8 @@ import SearchIcon from "components/common/icons/search-icon";
 import AddressListItem from "./AddressListItem";
 
 interface Props {
-  handleSelectAddress: (position: UserAddress) => void;
-  selectAddress: UserAddress;
+  handleSelectAddress: (position: CurrentPosition) => void;
+  selectAddress: CurrentPosition;
 }
 
 const Search = ({ handleSelectAddress, selectAddress }: Props) => {

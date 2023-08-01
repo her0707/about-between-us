@@ -16,8 +16,7 @@ const AddressSearchModal = ({
   isVisible,
   user,
 }: Props) => {
-  const [selectAddress, setSelectAddress] = useState<UserAddress>({
-    name: "",
+  const [selectAddress, setSelectAddress] = useState<CurrentPosition>({
     lat: "",
     lng: "",
     addressName: "",
@@ -27,7 +26,7 @@ const AddressSearchModal = ({
     handleSubmit({ ...selectAddress, name: user });
   };
 
-  const handleSelectAddress = (position: UserAddress) => {
+  const handleSelectAddress = (position: CurrentPosition) => {
     setSelectAddress(position);
   };
 
