@@ -1,7 +1,7 @@
 "use client";
 
 import { useAtom } from "jotai";
-import { useRef, useState } from "react";
+import { MouseEvent, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 
 import AddressSearchModal from "../AddressSearch/AddressSearchModal";
@@ -37,6 +37,14 @@ const UserAddressForm = () => {
     router.push(ROUTE.MAP);
   };
 
+  const handleAddressClear = (
+    e: MouseEvent<HTMLAnchorElement>,
+    type: string
+  ) => {
+    e.stopPropagation();
+    setUsersLocation((prev) => prev.filter((v) => v.name !== type));
+  };
+
   return (
     <>
       <div className="mx-6">
@@ -48,6 +56,7 @@ const UserAddressForm = () => {
               key={`user-${i}`}
               type={`user-${i}`}
               handleSearch={handleSearch}
+              handleRemove={handleAddressClear}
               address={
                 usersLocation.find((v) => v.name === `user-${i}`)?.addressName
               }
@@ -58,12 +67,14 @@ const UserAddressForm = () => {
           현재 최대 2명의 사용자의 출발지만 등록 가능합니다.
         </div>
 
-        <AddressSearchModal
-          isVisible={modalIsVisible}
-          handleInvisible={handleInvisible}
-          handleSubmit={handleModalSubmit}
-          user={user.current}
-        />
+        {modalIsVisible && (
+          <AddressSearchModal
+            isVisible={modalIsVisible}
+            handleInvisible={handleInvisible}
+            handleSubmit={handleModalSubmit}
+            user={user.current}
+          />
+        )}
       </div>
       <FloatingButton text="중간위치 찾기" handleClick={handleClick} />
     </>

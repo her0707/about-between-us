@@ -14,7 +14,7 @@ const FloatingButton = ({
   handleClick,
 }: Props) => {
   return (
-    <div className="fixed bottom-0 px-5 mb-5 w-full">
+    <div className="fixed bottom-0 px-5 mb-5 w-full max-w-screen-sm">
       <Button
         color={color}
         className={`w-full rounded-lg font-bold ${className}`}
