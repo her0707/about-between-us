@@ -1,4 +1,7 @@
+import Link from "next/link";
+
 import Button from "@/components/common/button";
+import { ROUTE } from "constants/route";
 
 const Landing = () => {
   return (
@@ -12,9 +15,15 @@ const Landing = () => {
         </h4>
       </div>
 
-      <Button color="black" size="md" className="rounded-xl font-bold">
-        위치 등록하기
-      </Button>
+      <Link href={ROUTE.SEARCH}>
+        <Button
+          color="white"
+          size="md"
+          className="rounded-xl font-bold animate-fadeIn"
+        >
+          위치 등록하기
+        </Button>
+      </Link>
     </div>
   );
 };

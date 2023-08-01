@@ -20,5 +20,8 @@ Axios.interceptors.request.use(
 );
 
 export const getKakaoSearchAddress = (params: KakaoSearchParams) => {
-  return Axios.get(`/v2/local/search/address.json`, { params: params });
+  return Axios.get<{
+    documents: KakaoSearchAddress[];
+    meta: { is_end: boolean; pageable_count: number; total_count: number };
+  }>(`/v2/local/search/address.json`, { params: params });
 };

@@ -32,14 +32,14 @@ const colorVariant: ColorVariant = {
   yellow:
     "text-white bg-yellow-500 hover:bg-orange-600 focus:bg-orange-600 active:bg-orange-700",
   white:
-    "text-black bg-white hover:bg-gray-100 focus:bg-gray-100 active:bg-gray-100 ",
+    "text-black bg-white hover:bg-gray-100 focus:bg-gray-100 active:bg-gray-100 border ",
   black: "bg-black text-white hover:bg-gray-800 active:bg-gray-800",
 };
 
 const sizeVariant: SizeVariant = {
-  xs: "py-2.5 px-6 text-xs ",
-  md: "py-3.5 px-8 text-md ",
-  lg: "py-4.5 px-10 text-lg ",
+  xs: "py-2 px-6 text-xs ",
+  md: "py-2.5 px-8 text-md ",
+  lg: "py-5 px-10 text-lg ",
 };
 
 const Button = ({

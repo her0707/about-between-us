@@ -1,4 +1,4 @@
-import Search from "@/feature/search";
+import Search from "@/feature/UserAddress/UserAddressForm";
 
 export default async function Page() {
   return <Search />;
