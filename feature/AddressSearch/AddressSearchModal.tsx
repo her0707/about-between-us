@@ -1,9 +1,10 @@
 "use client";
 
-import { useState, MutableRefObject } from "react";
+import { useAtom } from "jotai";
 
 import Modal from "@/components/common/modal";
 import Search from "./Search";
+import { selectAddressAtom } from "@/store/address";
 
 interface Props extends Pick<ModalProps, "handleInvisible" | "isVisible"> {
   handleSubmit: (userAddress: UserAddress) => void;
@@ -16,11 +17,7 @@ const AddressSearchModal = ({
   isVisible,
   user,
 }: Props) => {
-  const [selectAddress, setSelectAddress] = useState<CurrentPosition>({
-    lat: "",
-    lng: "",
-    addressName: "",
-  });
+  const [selectAddress, setSelectAddress] = useAtom(selectAddressAtom);
 
   const handleModalSubmit = () => {
     handleSubmit({ ...selectAddress, name: user });
@@ -38,10 +35,7 @@ const AddressSearchModal = ({
       handleSubmit={handleModalSubmit}
       isVisible={isVisible}
     >
-      <Search
-        handleSelectAddress={handleSelectAddress}
-        selectAddress={selectAddress}
-      />
+      <Search />
     </Modal>
   );
 };

@@ -67,14 +67,12 @@ const UserAddressForm = () => {
           현재 최대 2명의 사용자의 출발지만 등록 가능합니다.
         </div>
 
-        {modalIsVisible && (
-          <AddressSearchModal
-            isVisible={modalIsVisible}
-            handleInvisible={handleInvisible}
-            handleSubmit={handleModalSubmit}
-            user={user.current}
-          />
-        )}
+        <AddressSearchModal
+          isVisible={modalIsVisible}
+          handleInvisible={handleInvisible}
+          handleSubmit={handleModalSubmit}
+          user={user.current}
+        />
       </div>
       <FloatingButton text="중간위치 찾기" handleClick={handleClick} />
     </>

@@ -1,21 +1,26 @@
 "use client";
 
-import { useState, ChangeEvent, KeyboardEvent } from "react";
+import { useState, ChangeEvent, KeyboardEvent, useEffect } from "react";
+import { useAtom } from "jotai";
 
 import Input from "@/components/common/input";
 import { getKakaoSearchAddress } from "@/service/kakao-map";
 import SearchIcon from "components/common/icons/search-icon";
 import AddressListItem from "./AddressListItem";
+import { selectAddressAtom } from "store/address";
+import { selectAddressInitialValue } from "@/constants/address-data";
 
-interface Props {
-  handleSelectAddress: (position: CurrentPosition) => void;
-  selectAddress: CurrentPosition;
-}
-
-const Search = ({ handleSelectAddress, selectAddress }: Props) => {
+const Search = () => {
   const [search, setSearch] = useState("");
+  const [selectAddress, setSelectAddress] = useAtom(selectAddressAtom);
 
   const [addressList, setAddressList] = useState<KakaoSearchAddress[]>([]);
+
+  useEffect(() => {
+    return () => {
+      setSelectAddress(selectAddressInitialValue);
+    };
+  }, [setSelectAddress]);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -39,7 +44,7 @@ const Search = ({ handleSelectAddress, selectAddress }: Props) => {
   };
 
   const handleClick = (addressName: string, location: GeoLocation) => {
-    handleSelectAddress({ addressName, ...location });
+    setSelectAddress({ addressName, ...location });
   };
 
   return (
