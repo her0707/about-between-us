@@ -29,4 +29,21 @@ interface TransitionProps {
     leaveTo: string;
   };
   direction: "enter" | "leave";
+  callback: () => void;
+}
+
+interface ChildrenHookProps {
+  callback?: () => void;
+}
+
+interface TransitionContext {
+  childrenInfo: {
+    register: (container: MutableRefObject<HTMLElement | null>) => void;
+    unregister: (
+      container: MutableRefObject<HTMLElement | null>,
+      state?: State
+    ) => void;
+    transitionableChildren: MutableRefObject<ChildrenContainer[]>;
+  };
+  isShow: boolean;
 }

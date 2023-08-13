@@ -13,19 +13,16 @@ import {
 } from "react";
 import useTransition from "@/components/common/transition/useTransition";
 import {
-  ChildrenContainer,
   TransitionChildComponentProps,
   TransitionComponentProps,
+  TransitionContext,
 } from "@/types/transition";
 
 import { createContext } from "react";
 import { useChildren } from "./useChildren";
 import { hasChildren } from "./util";
 
-const TransitionContext = createContext<{
-  childrenContainer: MutableRefObject<ChildrenContainer[]>;
-  isShow: boolean;
-} | null>(null);
+const TransitionContext = createContext<TransitionContext | null>(null);
 
 function useTransitionContext() {
   let context = useContext(TransitionContext);
@@ -43,16 +40,9 @@ const Transition = (
   props: PropsWithChildren<TransitionComponentProps>,
   ref: MutableRefObject<HTMLElement>
 ) => {
-  const {
-    children,
-    isVisible,
-    enter,
-    leave,
-    enterFrom,
-    enterTo,
-    leaveFrom,
-    leaveTo,
-  } = props;
+  // TODO: Child 없이 단독 사용 구현필요
+
+  const { children, isVisible } = props;
   const containerRef = useRef<HTMLElement | null>(null);
   const [state, setState] = useState(isVisible);
 
@@ -60,12 +50,10 @@ const Transition = (
     //@ts-ignore
     className: `${children?.props.className}`,
     ref: containerRef,
+    ...props,
   };
 
-  const { transitionableChildren, register } = useChildren({
-    childContainer: containerRef,
-    isVisible: state,
-    initialValue: [],
+  const childrenInfo = useChildren({
     callback: () => {
       setState(false);
     },
@@ -74,28 +62,18 @@ const Transition = (
   useEffect(() => {
     if (isVisible) {
       setState(true);
-    } else if (!hasChildren(transitionableChildren.current)) {
-      setState(false);
     }
-  }, [isVisible, transitionableChildren]);
-
-  useTransition({
-    node: containerRef,
-    classes: {
-      enter: enter || "",
-      leave: leave || "",
-      enterFrom: enterFrom || "",
-      enterTo: enterTo || "",
-      leaveFrom: leaveFrom || "",
-      leaveTo: leaveTo || "",
-    },
-    direction: isVisible ? "enter" : "leave",
-  });
+  }, [isVisible]);
 
   return (
-    <TransitionContext.Provider
-      value={{ isShow: isVisible, childrenContainer: transitionableChildren }}
-    >
+    <TransitionContext.Provider value={{ isShow: isVisible, childrenInfo }}>
+      {/* {render(
+        <TransitionChildForwardRef {...renderProps}>
+          {children}
+        </TransitionChildForwardRef>,
+        state,
+        renderProps
+      )} */}
       {render(children, state, renderProps)}
     </TransitionContext.Provider>
   );
@@ -109,8 +87,10 @@ const TransitionChild = (
     props;
   const containerRef = useRef<HTMLElement | null>(null);
 
-  const { isShow, childrenContainer } = useTransitionContext();
+  const { isShow, childrenInfo } = useTransitionContext();
   const [state, setState] = useState(isShow);
+
+  const { register, unregister } = childrenInfo;
 
   const renderProps = {
     //@ts-ignore
@@ -118,19 +98,16 @@ const TransitionChild = (
     ref: containerRef,
   };
 
-  const parentToChildState = isShow;
-
-  const { register, unregister } = useChildren({
-    childContainer: containerRef,
-    isVisible: parentToChildState,
-    initialValue: childrenContainer.current,
+  useChildren({
     callback: () => {
       setState(false);
       unregister(containerRef);
     },
   });
 
-  useEffect(() => register(containerRef), [register, containerRef]);
+  useEffect(() => {
+    register(containerRef);
+  }, [containerRef, register]);
 
   useEffect(() => {
     if (!containerRef.current) return;
@@ -142,8 +119,9 @@ const TransitionChild = (
         unregister(containerRef, "unmount");
       }
     };
-  }, [register, unregister, state]);
-  console.log(containerRef);
+  }, [register, unregister, state, containerRef]);
+
+  let direction: "enter" | "leave" = isShow ? "enter" : "leave";
 
   useTransition({
     node: containerRef,
@@ -155,7 +133,13 @@ const TransitionChild = (
       leaveFrom: leaveFrom || "",
       leaveTo: leaveTo || "",
     },
-    direction: isShow ? "enter" : "leave",
+    direction,
+    callback: () => {
+      if (direction === "leave") {
+        setState(false);
+        unregister(containerRef, "unmount");
+      }
+    },
   });
   return <Fragment>{render(children, state, renderProps)}</Fragment>;
 };
@@ -184,13 +168,17 @@ function render(children: ReactNode, isVisible: boolean, props: any) {
 
 function forwardRefWithAs<T extends { name: string; displayName?: string }>(
   component: T
-): T & { displayName: string } {
+): T {
   return Object.assign(forwardRef(component as unknown as any) as any, {
-    displayName: component.displayName ?? component.name,
+    displayName: component.name,
   });
 }
 
+const TransitionRootForwardRef = forwardRefWithAs(Transition);
+const TransitionChildForwardRef = forwardRefWithAs(TransitionChild);
+const TransitionChildFnForwardRef = forwardRefWithAs(ChildFn);
+
 export let TransitionComponent = Object.assign(Transition, {
-  Child: forwardRefWithAs(ChildFn),
-  Root: forwardRefWithAs(Transition),
+  Child: TransitionChildFnForwardRef,
+  Root: TransitionRootForwardRef,
 });
