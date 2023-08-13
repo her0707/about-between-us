@@ -13,7 +13,7 @@ declare global {
 }
 
 interface Props {
-  defaultCoords: CurrentPosition;
+  defaultCoords: GeoLocation;
 }
 
 export default function KaKaoMap({ defaultCoords }: Props) {
