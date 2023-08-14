@@ -7,12 +7,12 @@ import Input from "@/components/common/input";
 import { getKakaoSearchAddress } from "@/service/kakao-map";
 import SearchIcon from "components/common/icons/search-icon";
 import AddressListItem from "./AddressListItem";
-import { selectAddressAtom } from "store/address";
+import { addressSearchAtom } from "store/address";
 import { selectAddressInitialValue } from "@/constants/address-data";
 
 const Search = () => {
   const [search, setSearch] = useState("");
-  const [selectAddress, setSelectAddress] = useAtom(selectAddressAtom);
+  const [selectAddress, setSelectAddress] = useAtom(addressSearchAtom);
 
   const [addressList, setAddressList] = useState<KakaoSearchAddress[]>([]);
 

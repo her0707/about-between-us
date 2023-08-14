@@ -383,11 +383,13 @@ __metadata:
     eslint: 8.34.0
     eslint-config-next: ^13.3.0
     jotai: ^2.0.1
+    kakao.maps.d.ts: ^0.1.38
     lodash-es: ^4.17.21
     next: ^13.3.0
     postcss: ^8.4.21
     react: ^18.2.0
     react-dom: ^18.2.0
+    react-kakao-maps-sdk: ^1.1.11
     tailwindcss: ^3.2.6
     typescript: 4.9.5
   languageName: unknown
@@ -2444,6 +2446,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"kakao.maps.d.ts@npm:^0.1.38":
+  version: 0.1.38
+  resolution: "kakao.maps.d.ts@npm:0.1.38"
+  checksum: 4033de2f1aa23d0d10c2585b4297aab0a0203b76bac63584f3833bdcdb8baf79ea23d77eeaaefa570128a2fd947f5f29ea7e66038b1bc8609c34c8887296951b
+  languageName: node
+  linkType: hard
+
 "language-subtag-registry@npm:~0.3.2":
   version: 0.3.22
   resolution: "language-subtag-registry@npm:0.3.22"
@@ -3263,6 +3272,18 @@ __metadata:
   version: 16.13.1
   resolution: "react-is@npm:16.13.1"
   checksum: f7a19ac3496de32ca9ae12aa030f00f14a3d45374f1ceca0af707c831b2a6098ef0d6bdae51bd437b0a306d7f01d4677fcc8de7c0d331eb47ad0f46130e53c5f
+  languageName: node
+  linkType: hard
+
+"react-kakao-maps-sdk@npm:^1.1.11":
+  version: 1.1.11
+  resolution: "react-kakao-maps-sdk@npm:1.1.11"
+  dependencies:
+    kakao.maps.d.ts: ^0.1.38
+  peerDependencies:
+    react: ">=16.9.0"
+    react-dom: ">=16.9.0"
+  checksum: 564847d02316b314d8d87772111944d0be31936edc880cf7a10680d2b46593459c318228f48472cc6c222ccb2703410bebde913fe604721e9ceef2fc694b8a0d
   languageName: node
   linkType: hard
 

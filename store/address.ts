@@ -1,6 +1,6 @@
 import { atom } from "jotai";
 import { selectAddressInitialValue } from "@/constants/address-data";
 
-export const selectAddressAtom = atom<CurrentPosition>(
+export const addressSearchAtom = atom<CurrentPosition>(
   selectAddressInitialValue
 );

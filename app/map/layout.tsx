@@ -6,9 +6,9 @@ export default function SearchLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div>
+    <>
       <Header />
       {children}
-    </div>
+    </>
   );
 }

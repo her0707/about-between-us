@@ -4,7 +4,7 @@ import { useAtom } from "jotai";
 
 import Modal from "@/components/common/modal";
 import Search from "./Search";
-import { selectAddressAtom } from "@/store/address";
+import { addressSearchAtom } from "@/store/address";
 
 interface Props extends Pick<ModalProps, "handleInvisible" | "isVisible"> {
   handleSubmit: (userAddress: UserAddress) => void;
@@ -17,7 +17,7 @@ const AddressSearchModal = ({
   isVisible,
   user,
 }: Props) => {
-  const [selectAddress, setSelectAddress] = useAtom(selectAddressAtom);
+  const [selectAddress, setSelectAddress] = useAtom(addressSearchAtom);
 
   const handleModalSubmit = () => {
     handleSubmit({ ...selectAddress, name: user });
