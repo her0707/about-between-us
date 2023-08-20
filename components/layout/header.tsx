@@ -8,7 +8,7 @@ const Header = () => {
 
   return (
     <>
-      <div className={`fixed z-20 m-auto h-14 w-full max-w-2xl bg-white`}>
+      <div className={`fixed z-20 m-auto h-14 w-full max-w-screen-sm bg-white`}>
         <a
           className="absolute h-14 w-14 cursor-pointer p-5 text-center"
           id={"backButton"}

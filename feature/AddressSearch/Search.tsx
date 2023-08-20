@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, ChangeEvent, KeyboardEvent, useEffect } from "react";
+import { useState, ChangeEvent, KeyboardEvent, useEffect, useRef } from "react";
 import { useAtom } from "jotai";
 
 import Input from "@/components/common/input";
@@ -13,10 +13,13 @@ import { selectAddressInitialValue } from "@/constants/address-data";
 const Search = () => {
   const [search, setSearch] = useState("");
   const [selectAddress, setSelectAddress] = useAtom(addressSearchAtom);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const [addressList, setAddressList] = useState<KakaoSearchAddress[]>([]);
 
   useEffect(() => {
+    inputRef.current?.focus();
+
     return () => {
       setSelectAddress(selectAddressInitialValue);
     };
@@ -50,6 +53,7 @@ const Search = () => {
   return (
     <>
       <Input
+        ref={inputRef}
         value={search}
         inputClassName="rounded-lg"
         onChange={handleChange}

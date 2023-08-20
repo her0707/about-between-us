@@ -10,6 +10,8 @@ import LocationText from "./LocationText";
 import { ROUTE } from "@/constants/route";
 
 import MapContent from "./Map";
+import BottomSheet from "@/components/common/bottom-sheet/BottomSheet";
+import { bottomSheetConst } from "@/constants/ui";
 
 export default function MapContainer() {
   const setIsMapLoaded = useSetAtom(isMapLoadedAtom);
@@ -41,6 +43,10 @@ export default function MapContainer() {
           ))}
         </div>
       </div>
+      <BottomSheet
+        minHeight={bottomSheetConst.MIN}
+        maxHeight={bottomSheetConst.MAX}
+      />
     </>
   );
 }
