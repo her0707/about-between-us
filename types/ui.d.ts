@@ -7,7 +7,7 @@ interface ModalProps {
 }
 
 interface BottomSheetProps {
-  maxHeight: number;
-  minHeight: number;
+  maxY: number;
+  minY: number;
   snapPoints?: (maxHeight: number) => number[];
 }

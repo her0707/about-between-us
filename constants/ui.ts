@@ -1,4 +1,5 @@
 export const bottomSheetConst = {
-  MIN: 80,
-  MAX: window.innerHeight - 200,
+  MIN: 100,
+  MAX: 80,
+  INIT_Y: 80,
 };

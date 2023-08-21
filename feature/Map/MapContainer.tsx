@@ -43,10 +43,7 @@ export default function MapContainer() {
           ))}
         </div>
       </div>
-      <BottomSheet
-        minHeight={bottomSheetConst.MIN}
-        maxHeight={bottomSheetConst.MAX}
-      />
+      <BottomSheet minY={bottomSheetConst.MIN} maxY={bottomSheetConst.MAX} />
     </>
   );
 }
