@@ -14,7 +14,7 @@ const BottomSheet = (props: PropsWithChildren<BottomSheetProps>) => {
           height: `${height}px`,
           top: `calc(100% - 100px)`,
         }}
-        className="fixed bg-white rounded-t-xl  will-change-transform max-w-screen-sm w-full ease-out duration-300 z-40 shadow-md"
+        className="fixed bg-white left-0 right-0 m-auto rounded-t-xl  will-change-transform max-w-screen-sm w-full ease-out duration-300 z-40 shadow-md"
       >
         <Header />
         <div

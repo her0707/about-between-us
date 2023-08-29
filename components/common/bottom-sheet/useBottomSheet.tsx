@@ -45,17 +45,19 @@ const useBottomSheet = ({ snapPoints: getSnapPoints }: BottomSheetProps) => {
     const { touchMove, isContentTouch } = sheetCoords.current;
 
     if (!isContentTouch) {
+      console.log(1);
       return true;
     }
 
-    if (sheetRef.current?.getBoundingClientRect().y !== bottomSheetConst.MIN) {
+    if (
+      sheetRef.current?.getBoundingClientRect().y !==
+      bottomSheetConst.MIN * 2
+    ) {
       return true;
     }
 
     if (touchMove.movingDirection === "down") {
-      return sheetContentRef.current
-        ? sheetContentRef.current.scrollTop <= 0
-        : false;
+      return sheetContentRef.current!.scrollTop <= 0;
     }
 
     return false;
@@ -88,6 +90,7 @@ const useBottomSheet = ({ snapPoints: getSnapPoints }: BottomSheetProps) => {
 
       if (isMoveBottomSheet()) {
         e.preventDefault();
+
         const touchOffset = currentTouch.clientY - touchStart.touchY;
         let nextY = touchStart.sheetY + touchOffset;
 
@@ -120,7 +123,7 @@ const useBottomSheet = ({ snapPoints: getSnapPoints }: BottomSheetProps) => {
       //   maxY
       // );
 
-      if (currentSheetY !== MIN) {
+      if (currentSheetY !== MIN * 2) {
         if (touchMove.movingDirection === "down") {
           sheetRef.current?.style.setProperty(
             "transform",
@@ -152,8 +155,6 @@ const useBottomSheet = ({ snapPoints: getSnapPoints }: BottomSheetProps) => {
   );
 
   const handleContentTouch = useCallback((e: TouchEvent) => {
-    e.preventDefault();
-
     sheetCoords.current.isContentTouch = true;
   }, []);
 
@@ -166,27 +167,27 @@ const useBottomSheet = ({ snapPoints: getSnapPoints }: BottomSheetProps) => {
   }, []);
 
   useEffect(() => {
+    sheetContentRef.current?.addEventListener("touchstart", handleContentTouch);
+
+    return () => {
+      sheetContentRef.current?.removeEventListener(
+        "touchstart",
+        handleContentTouch
+      );
+    };
+  }, [handleContentTouch]);
+
+  useEffect(() => {
     sheetRef.current?.addEventListener("touchstart", handleTouchStart);
     sheetRef.current?.addEventListener("touchmove", handleTouchMove);
     sheetRef.current?.addEventListener("touchend", handleTouchEnd);
-
-    sheetContentRef.current?.addEventListener("touchstart", handleContentTouch);
-    sheetContentRef.current?.addEventListener("touchend", handleContentTouch);
 
     return () => {
       sheetRef.current?.removeEventListener("touchstart", handleTouchStart);
       sheetRef.current?.removeEventListener("touchmove", handleTouchMove);
       sheetRef.current?.removeEventListener("touchend", handleTouchEnd);
-      sheetContentRef.current?.removeEventListener(
-        "touchstart",
-        handleContentTouch
-      );
-      sheetContentRef.current?.removeEventListener(
-        "touchend",
-        handleContentTouch
-      );
     };
-  }, [handleTouchEnd, handleTouchMove, handleTouchStart, handleContentTouch]);
+  }, [handleTouchEnd, handleTouchMove, handleTouchStart]);
 
   return {
     sheetRef,
