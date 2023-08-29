@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useRef, useState, useMemo } from "react";
 import { makeSnapPoints } from "./util";
-import { bottomSheetConst } from "@/constants/ui";
 
 interface BottomSheetCoords {
   touchStart: {
@@ -11,14 +10,25 @@ interface BottomSheetCoords {
     prevTouchY?: number; // 이번 터치지점에 대한 Y값을 저장
     movingDirection: "none" | "down" | "up"; // 터치 방향
   };
+  isContentTouch: boolean;
 }
 
-const useBottomSheet = ({
-  minY,
-  maxY: initMaxY,
-  snapPoints: getSnapPoints,
-}: BottomSheetProps) => {
+interface BottomSheetConst {
+  MIN: number;
+  MAX: number;
+  HEIGHT: number;
+}
+
+const useBottomSheet = ({ snapPoints: getSnapPoints }: BottomSheetProps) => {
+  const [bottomSheetConst, setBottomSheetConst] = useState<BottomSheetConst>({
+    MIN: 100,
+    MAX: 0,
+    HEIGHT: 0,
+  });
+
   const sheetRef = useRef<HTMLDivElement>(null);
+  const sheetContentRef = useRef<HTMLDivElement>(null);
+
   const sheetCoords = useRef<BottomSheetCoords>({
     touchStart: {
       sheetY: 0,
@@ -28,15 +38,28 @@ const useBottomSheet = ({
       prevTouchY: 0,
       movingDirection: "none",
     },
+    isContentTouch: false,
   });
 
-  const [height, setHeight] = useState<number>(0);
-  const maxY = useRef<number>(0);
+  const isMoveBottomSheet = useCallback(() => {
+    const { touchMove, isContentTouch } = sheetCoords.current;
 
-  const initBottomSheetY = useMemo(
-    () => height - bottomSheetConst.INIT_Y,
-    [height]
-  );
+    if (!isContentTouch) {
+      return true;
+    }
+
+    if (sheetRef.current?.getBoundingClientRect().y !== bottomSheetConst.MIN) {
+      return true;
+    }
+
+    if (touchMove.movingDirection === "down") {
+      return sheetContentRef.current
+        ? sheetContentRef.current.scrollTop <= 0
+        : false;
+    }
+
+    return false;
+  }, [bottomSheetConst.MIN]);
 
   const handleTouchStart = useCallback((e: TouchEvent) => {
     const { touchStart } = sheetCoords.current;
@@ -47,9 +70,8 @@ const useBottomSheet = ({
 
   const handleTouchMove = useCallback(
     (e: TouchEvent) => {
-      e.preventDefault();
-
       const { touchMove, touchStart } = sheetCoords.current;
+      const { MIN, MAX } = bottomSheetConst;
       const currentTouch = e.touches[0];
 
       if (!touchMove.prevTouchY) {
@@ -64,29 +86,33 @@ const useBottomSheet = ({
         touchMove.movingDirection = "up";
       }
 
-      const touchOffset = currentTouch.clientY - touchStart.touchY;
-      let nextY = touchStart.sheetY + touchOffset;
+      if (isMoveBottomSheet()) {
+        e.preventDefault();
+        const touchOffset = currentTouch.clientY - touchStart.touchY;
+        let nextY = touchStart.sheetY + touchOffset;
 
-      if (nextY <= minY) {
-        nextY = minY;
+        if (nextY <= MIN) {
+          nextY = MIN;
+        }
+
+        if (nextY >= MAX) {
+          nextY = MAX;
+        }
+
+        sheetRef.current?.style.setProperty(
+          "transform",
+          `translateY(${nextY - MAX}px)`
+        );
       }
-
-      if (nextY >= maxY.current) {
-        nextY = maxY.current;
-      }
-
-      sheetRef.current?.style.setProperty(
-        "transform",
-        `translateY(${initBottomSheetY + (nextY - maxY.current)}px)`
-      );
     },
-    [minY, initBottomSheetY]
+    [isMoveBottomSheet, bottomSheetConst]
   );
 
   const handleTouchEnd = useCallback(
     (e: TouchEvent) => {
       const { touchMove } = sheetCoords.current;
 
+      const { MIN, MAX } = bottomSheetConst;
       const currentSheetY = sheetRef.current?.getBoundingClientRect().y;
 
       // const { minSnap, maxSnap, snapPoints } = makeSnapPoints(
@@ -94,21 +120,18 @@ const useBottomSheet = ({
       //   maxY
       // );
 
-      if (currentSheetY !== initBottomSheetY) {
-        console.log(currentSheetY, initBottomSheetY, touchMove);
+      if (currentSheetY !== MIN) {
         if (touchMove.movingDirection === "down") {
-          console.log("down", initBottomSheetY);
           sheetRef.current?.style.setProperty(
             "transform",
-            `translateY(${initBottomSheetY}px)`
+            `translateY(${0}px)`
           );
         }
 
         if (touchMove.movingDirection === "up") {
-          console.log("up", minY);
           sheetRef.current?.style.setProperty(
             "transform",
-            `translateY(${minY}px)`
+            `translateY(${MIN - MAX}px)`
           );
         }
       }
@@ -122,30 +145,53 @@ const useBottomSheet = ({
           prevTouchY: 0,
           movingDirection: "none",
         },
+        isContentTouch: false,
       };
     },
-    [initBottomSheetY, minY]
+    [bottomSheetConst]
   );
+
+  const handleContentTouch = useCallback((e: TouchEvent) => {
+    e.preventDefault();
+
+    sheetCoords.current.isContentTouch = true;
+  }, []);
+
+  useEffect(() => {
+    setBottomSheetConst((prev) => ({
+      ...prev,
+      MAX: window.innerHeight - 200,
+      HEIGHT: window.innerHeight - 200,
+    }));
+  }, []);
 
   useEffect(() => {
     sheetRef.current?.addEventListener("touchstart", handleTouchStart);
     sheetRef.current?.addEventListener("touchmove", handleTouchMove);
     sheetRef.current?.addEventListener("touchend", handleTouchEnd);
 
-    setHeight(window.innerHeight - minY);
-    maxY.current = window.innerHeight - initMaxY;
+    sheetContentRef.current?.addEventListener("touchstart", handleContentTouch);
+    sheetContentRef.current?.addEventListener("touchend", handleContentTouch);
 
     return () => {
       sheetRef.current?.removeEventListener("touchstart", handleTouchStart);
       sheetRef.current?.removeEventListener("touchmove", handleTouchMove);
       sheetRef.current?.removeEventListener("touchend", handleTouchEnd);
+      sheetContentRef.current?.removeEventListener(
+        "touchstart",
+        handleContentTouch
+      );
+      sheetContentRef.current?.removeEventListener(
+        "touchend",
+        handleContentTouch
+      );
     };
-  }, [handleTouchEnd, handleTouchMove, handleTouchStart, initMaxY, minY]);
+  }, [handleTouchEnd, handleTouchMove, handleTouchStart, handleContentTouch]);
 
   return {
     sheetRef,
-    height,
-    initBottomSheetY,
+    sheetContentRef,
+    height: bottomSheetConst.HEIGHT,
   };
 };
 

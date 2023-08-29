@@ -111,3 +111,7 @@
   height: 12px;
   background: url("../public/images/vertex_white.png");
 }
+
+.scrolling-touch {
+  -webkit-overflow-scrolling: touch;
+}

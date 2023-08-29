@@ -11,7 +11,6 @@ import { ROUTE } from "@/constants/route";
 
 import MapContent from "./Map";
 import BottomSheet from "@/components/common/bottom-sheet/BottomSheet";
-import { bottomSheetConst } from "@/constants/ui";
 
 export default function MapContainer() {
   const setIsMapLoaded = useSetAtom(isMapLoadedAtom);
@@ -43,7 +42,15 @@ export default function MapContainer() {
           ))}
         </div>
       </div>
-      <BottomSheet minY={bottomSheetConst.MIN} maxY={bottomSheetConst.MAX} />
+      <BottomSheet>
+        <ul>
+          {new Array(50).fill("a").map((v, i) => (
+            <li className="block rounded-lg border py-4- text-center" key={i}>
+              {v}
+            </li>
+          ))}
+        </ul>
+      </BottomSheet>
     </>
   );
 }

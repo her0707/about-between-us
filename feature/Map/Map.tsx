@@ -51,33 +51,31 @@ const MapContent = ({ usersLocation }: Props) => {
     });
   };
 
-  return (
-    isMapLoaded && (
-      <Map
-        center={{
-          lat: Number(currentPosition.lat),
-          lng: Number(currentPosition.lng),
-        }}
-        style={{ width: "100%", height: "100%" }}
-        onCreate={onCreate}
-      >
-        {usersLocation.map((address, key) => (
-          <CustomOverlayMap
-            key={address.name}
-            position={{
-              lat: Number(address.lat),
-              lng: Number(address.lng),
-            }}
-            yAnchor={1}
-          >
-            <div className="user-overlay">
-              <span className="title">{key + 1}</span>
-            </div>
-          </CustomOverlayMap>
-        ))}
-      </Map>
-    )
-  );
+  return isMapLoaded ? (
+    <Map
+      center={{
+        lat: Number(currentPosition.lat),
+        lng: Number(currentPosition.lng),
+      }}
+      style={{ width: "100%", height: "100%" }}
+      onCreate={onCreate}
+    >
+      {usersLocation.map((address, key) => (
+        <CustomOverlayMap
+          key={address.name}
+          position={{
+            lat: Number(address.lat),
+            lng: Number(address.lng),
+          }}
+          yAnchor={1}
+        >
+          <div className="user-overlay">
+            <span className="title">{key + 1}</span>
+          </div>
+        </CustomOverlayMap>
+      ))}
+    </Map>
+  ) : null;
 };
 
 export default memo(MapContent);
