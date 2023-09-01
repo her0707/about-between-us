@@ -15,7 +15,9 @@ export default function RootLayout({
   return (
     <html lang="ko">
       <body>
-        <div className="max-w-screen-sm m-auto h-screen">{children}</div>
+        <div className="max-w-screen-sm m-auto real-screen-height">
+          {children}
+        </div>
         <div id="portal"></div>
       </body>
     </html>

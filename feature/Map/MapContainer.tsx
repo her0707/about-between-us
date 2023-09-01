@@ -17,6 +17,18 @@ export default function MapContainer() {
   const router = useRouter();
   const usersLocation = useAtomValue(usersLocationAtom);
 
+  const handleResize = () => {
+    const vh = window.innerHeight * 0.01;
+    document.documentElement.style.setProperty("--vh", `${vh}px`);
+  };
+
+  useEffect(() => {
+    handleResize();
+    window.addEventListener("resize", handleResize);
+
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   useEffect(() => {
     if (!usersLocation.length) router.replace(ROUTE.SEARCH);
   }, [router, usersLocation.length]);
