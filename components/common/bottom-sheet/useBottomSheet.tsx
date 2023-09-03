@@ -4,8 +4,7 @@ import {
   useRef,
   useState,
   useMemo,
-  TouchEvent,
-  MouseEvent as ReactMouseEvent,
+  TouchEvent as ReactTouchEvent,
 } from "react";
 import { makeSnapPoints, isTouchDevice } from "./util";
 
@@ -44,7 +43,6 @@ const useBottomSheet = ({ snapPoints: getSnapPoints }: BottomSheetProps) => {
 
   const sheetRef = useRef<HTMLDivElement>(null);
   const sheetContentRef = useRef<HTMLDivElement>(null);
-  const sheetContainerRef = useRef<HTMLDivElement>(null);
 
   const sheetCoords = useRef<BottomSheetCoords>({
     touchStart: {
@@ -80,10 +78,7 @@ const useBottomSheet = ({ snapPoints: getSnapPoints }: BottomSheetProps) => {
       return true;
     }
 
-    if (
-      touchMove.movingDirection === "down" ||
-      mouseMove.movingDirection === "down"
-    ) {
+    if (touchMove.movingDirection === "down") {
       return sheetContentRef.current!.scrollTop <= 0;
     }
 
@@ -134,15 +129,15 @@ const useBottomSheet = ({ snapPoints: getSnapPoints }: BottomSheetProps) => {
 
         const { MIN, MAX } = bottomSheetConst;
 
-        const offset = e.pageY - mouseEnter.screenY;
+        const offset = e.clientY - mouseEnter.screenY;
         let nextY = mouseEnter.sheetY + offset;
 
         if (nextY <= MIN) {
           nextY = MIN;
         }
 
-        if (nextY >= MAX) {
-          nextY = MAX;
+        if (nextY >= MAX - MIN) {
+          nextY = MAX - MIN;
         }
 
         sheetRef.current?.style.setProperty(
@@ -165,7 +160,7 @@ const useBottomSheet = ({ snapPoints: getSnapPoints }: BottomSheetProps) => {
   );
 
   const handleMouseDown = useCallback(
-    (e: ReactMouseEvent<HTMLDivElement>) => {
+    (e: MouseEvent) => {
       const { mouseEnter } = sheetCoords.current;
 
       mouseEnter.screenY = sheetRef.current?.getBoundingClientRect().y || 0;
@@ -181,7 +176,7 @@ const useBottomSheet = ({ snapPoints: getSnapPoints }: BottomSheetProps) => {
   );
 
   // Mobile Event
-  const handleTouchStart = useCallback((e: TouchEvent<HTMLDivElement>) => {
+  const handleTouchStart = useCallback((e: TouchEvent) => {
     const { touchStart } = sheetCoords.current;
 
     touchStart.sheetY = sheetRef.current?.getBoundingClientRect().y || 0;
@@ -205,15 +200,15 @@ const useBottomSheet = ({ snapPoints: getSnapPoints }: BottomSheetProps) => {
       if (touchMove.prevTouchY > currentTouch.clientY) {
         touchMove.movingDirection = "up";
       }
+      console.log(sheetCoords.current.isContentTouch);
 
       if (isMoveBottomSheet()) {
         e.preventDefault();
-
         const touchOffset = currentTouch.clientY - touchStart.touchY;
         let nextY = touchStart.sheetY + touchOffset;
 
-        if (nextY <= MIN) {
-          nextY = MIN;
+        if (nextY <= MIN * 2) {
+          nextY = MIN * 2;
         }
 
         if (nextY >= MAX) {
@@ -224,13 +219,16 @@ const useBottomSheet = ({ snapPoints: getSnapPoints }: BottomSheetProps) => {
           "transform",
           `translateY(${nextY - MAX}px)`
         );
+      } else {
+        document.body.style.overflowY = "hidden";
       }
     },
     [isMoveBottomSheet, bottomSheetConst]
   );
 
   const handleTouchEnd = useCallback(
-    (e: TouchEvent<HTMLDivElement>) => {
+    (e: TouchEvent) => {
+      document.body.style.overflowY = "auto";
       const { touchMove } = sheetCoords.current;
 
       const { MIN, MAX } = bottomSheetConst;
@@ -252,7 +250,7 @@ const useBottomSheet = ({ snapPoints: getSnapPoints }: BottomSheetProps) => {
         if (touchMove.movingDirection === "up") {
           sheetRef.current?.style.setProperty(
             "transform",
-            `translateY(${MIN - MAX}px)`
+            `translateY(${MIN * 2 - MAX}px)`
           );
         }
       }
@@ -262,33 +260,50 @@ const useBottomSheet = ({ snapPoints: getSnapPoints }: BottomSheetProps) => {
     [bottomSheetConst]
   );
 
-  const handleContentTouch = useCallback((e: TouchEvent<HTMLDivElement>) => {
-    sheetCoords.current.isContentTouch = true;
-  }, []);
+  const handleContentTouch = useCallback(
+    (e: ReactTouchEvent<HTMLDivElement>) => {
+      sheetCoords.current.isContentTouch = true;
+    },
+    []
+  );
 
   useEffect(() => {
     setBottomSheetConst((prev) => ({
       ...prev,
-      MAX: window.innerHeight - 200,
-      HEIGHT: window.innerHeight - 200,
+      MAX: window.innerHeight - prev.MIN,
+      HEIGHT: window.innerHeight - prev.MIN * 2,
     }));
   }, []);
 
-  const handlers = isTouchDevice()
-    ? {
-        onTouchStart: handleTouchStart,
-        onTouchMove: handleTouchMove,
-        onTouchEnd: handleTouchEnd,
-      }
-    : { onMouseDown: handleMouseDown };
+  useEffect(() => {
+    sheetRef.current?.addEventListener("touchstart", handleTouchStart);
+    sheetRef.current?.addEventListener("touchmove", handleTouchMove);
+    sheetRef.current?.addEventListener("touchend", handleTouchEnd);
+
+    return () => {
+      sheetRef.current?.removeEventListener("touchstart", handleTouchStart);
+      sheetRef.current?.removeEventListener("touchmove", handleTouchMove);
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      sheetRef.current?.removeEventListener("touchend", handleTouchEnd);
+    };
+  }, [handleTouchEnd, handleTouchMove, handleTouchStart]);
+
+  useEffect(() => {
+    sheetRef.current?.addEventListener("mousedown", handleMouseDown);
+    sheetRef.current?.addEventListener("mousemove", handleMouseMove);
+
+    return () => {
+      sheetRef.current?.removeEventListener("mousedown", handleMouseDown);
+      sheetRef.current?.removeEventListener("mousemove", handleMouseMove);
+    };
+  }, [handleMouseMove, handleMouseDown]);
 
   return {
     sheetRef,
     sheetContentRef,
-    sheetContainerRef,
     height: bottomSheetConst.HEIGHT,
+    MIN: bottomSheetConst.MIN,
     handleContentTouch,
-    handlers,
   };
 };
 
