@@ -1,14 +1,14 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import dynamic from 'next/dynamic';
-import type { Origin } from '@/types/origin';
-import OriginCard from '@/features/origin-input/OriginCard';
-import AddressSearchModal from '@/features/origin-input/AddressSearchModal';
-import { useCurrentLocation } from '@/lib/utils/useCurrentLocation';
+import AddressSearchModal from "@/features/origin-input/AddressSearchModal";
+import OriginCard from "@/features/origin-input/OriginCard";
+import { useCurrentLocation } from "@/lib/utils/useCurrentLocation";
+import type { Origin } from "@/types/origin";
+import dynamic from "next/dynamic";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 
-const KakaoMap = dynamic(() => import('@/components/map/KakaoMap'), {
+const KakaoMap = dynamic(() => import("@/components/map/KakaoMap"), {
   ssr: false,
   loading: () => (
     <div className="w-full h-full flex items-center justify-center bg-gray-100">
@@ -21,31 +21,36 @@ export default function Home() {
   const router = useRouter();
   const [originA, setOriginA] = useState<Origin | null>(null);
   const [originB, setOriginB] = useState<Origin | null>(null);
-  const [searchModal, setSearchModal] = useState<{ isOpen: boolean; target: 'A' | 'B' }>({
+  const [searchModal, setSearchModal] = useState<{
+    isOpen: boolean;
+    target: "A" | "B";
+  }>({
     isOpen: false,
-    target: 'A',
+    target: "A",
   });
-  const [loadingLocation, setLoadingLocation] = useState<'A' | 'B' | null>(null);
+  const [loadingLocation, setLoadingLocation] = useState<"A" | "B" | null>(
+    null
+  );
 
   const { getCurrentLocation, error: locationError } = useCurrentLocation();
 
-  const handleSearchClick = (target: 'A' | 'B') => {
+  const handleSearchClick = (target: "A" | "B") => {
     setSearchModal({ isOpen: true, target });
   };
 
   const handleSearchSelect = (origin: Origin) => {
-    if (searchModal.target === 'A') {
+    if (searchModal.target === "A") {
       setOriginA(origin);
     } else {
       setOriginB(origin);
     }
   };
 
-  const handleCurrentLocation = async (target: 'A' | 'B') => {
+  const handleCurrentLocation = async (target: "A" | "B") => {
     setLoadingLocation(target);
     const location = await getCurrentLocation();
     if (location) {
-      if (target === 'A') {
+      if (target === "A") {
         setOriginA(location);
       } else {
         setOriginB(location);
@@ -74,7 +79,7 @@ export default function Home() {
   };
 
   return (
-    <div className="h-[100dvh] w-full relative overflow-hidden">
+    <div className="h-dvh w-full relative overflow-hidden">
       {/* Map */}
       <div className="absolute inset-0">
         <KakaoMap originA={originA} originB={originB} />
@@ -83,14 +88,23 @@ export default function Home() {
       {/* Top Search Bar */}
       <div className="absolute top-0 left-0 right-0 z-10 pt-safe px-4 pb-3 bg-white border-b border-gray-200">
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 bg-[var(--naver-green)] rounded flex items-center justify-center">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5">
-              <circle cx="12" cy="12" r="8"/>
-              <path d="M12 8v8M8 12h8"/>
+          <div className="w-8 h-8 bg-primary rounded flex items-center justify-center">
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="white"
+              strokeWidth="2.5"
+            >
+              <circle cx="12" cy="12" r="8" />
+              <path d="M12 8v8M8 12h8" />
             </svg>
           </div>
           <div>
-            <h1 className="text-base font-semibold text-gray-900">우리사이 여기쯤</h1>
+            <h1 className="text-base font-semibold text-gray-900">
+              우리사이 여기쯤
+            </h1>
             <p className="text-xs text-gray-500">두 출발지의 중간 지점 찾기</p>
           </div>
         </div>
@@ -102,17 +116,17 @@ export default function Home() {
           <OriginCard
             label="A"
             origin={originA}
-            onSearchClick={() => handleSearchClick('A')}
-            onCurrentLocationClick={() => handleCurrentLocation('A')}
-            isLoadingLocation={loadingLocation === 'A'}
+            onSearchClick={() => handleSearchClick("A")}
+            onCurrentLocationClick={() => handleCurrentLocation("A")}
+            isLoadingLocation={loadingLocation === "A"}
           />
 
           <OriginCard
             label="B"
             origin={originB}
-            onSearchClick={() => handleSearchClick('B')}
-            onCurrentLocationClick={() => handleCurrentLocation('B')}
-            isLoadingLocation={loadingLocation === 'B'}
+            onSearchClick={() => handleSearchClick("B")}
+            onCurrentLocationClick={() => handleCurrentLocation("B")}
+            isLoadingLocation={loadingLocation === "B"}
           />
 
           {locationError && (
@@ -124,11 +138,11 @@ export default function Home() {
             disabled={!isComplete}
             className={`w-full py-3 rounded-lg text-sm font-medium transition-colors ${
               isComplete
-                ? 'bg-[var(--naver-green)] text-white active:bg-[var(--naver-green-dark)]'
-                : 'bg-gray-100 text-gray-400'
+                ? "bg-primary text-white active:bg-primary-dark"
+                : "bg-gray-100 text-gray-400"
             }`}
           >
-            {isComplete ? '중간 지점 찾기' : '출발지를 모두 입력해주세요'}
+            {isComplete ? "중간 지점 찾기" : "출발지를 모두 입력해주세요"}
           </button>
         </div>
         <div className="pb-safe" />

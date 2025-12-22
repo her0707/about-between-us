@@ -81,7 +81,7 @@ function CandidatesContent() {
   }, [category, middlePoint.lat, middlePoint.lng, aLat, aLng, bLat, bLng]);
 
   return (
-    <div className="h-[100dvh] w-full flex flex-col overflow-hidden">
+    <div className="h-dvh w-full flex flex-col overflow-hidden">
       {/* Header */}
       <div className="shrink-0 flex items-center gap-2 px-4 py-3 border-b border-gray-200 bg-white pt-safe">
         <button
@@ -123,7 +123,7 @@ function CandidatesContent() {
           onClick={() => setCategory("CE7")}
           className={`flex-1 py-3 text-sm font-medium ${
             category === "CE7"
-              ? "text-[var(--naver-green)] border-b-2 border-[var(--naver-green)]"
+              ? "text-primary border-b-2 border-primary"
               : "text-gray-500"
           }`}
         >
@@ -133,7 +133,7 @@ function CandidatesContent() {
           onClick={() => setCategory("FD6")}
           className={`flex-1 py-3 text-sm font-medium ${
             category === "FD6"
-              ? "text-[var(--naver-green)] border-b-2 border-[var(--naver-green)]"
+              ? "text-primary border-b-2 border-primary"
               : "text-gray-500"
           }`}
         >
@@ -175,7 +175,7 @@ export default function CandidatesPage() {
   return (
     <Suspense
       fallback={
-        <div className="h-[100dvh] flex items-center justify-center">
+        <div className="h-dvh flex items-center justify-center">
           <div className="spinner" />
         </div>
       }

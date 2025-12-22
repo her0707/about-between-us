@@ -18,7 +18,7 @@ export default function OriginCard({
   isLoadingLocation = false,
 }: OriginCardProps) {
   const isA = label === 'A';
-  const dotColor = isA ? 'bg-[var(--color-origin-a)]' : 'bg-[var(--color-origin-b)]';
+  const dotColor = isA ? 'bg-origin-a' : 'bg-origin-b';
 
   return (
     <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg border border-gray-200">
@@ -57,7 +57,7 @@ export default function OriginCard({
       {origin && (
         <button
           onClick={onSearchClick}
-          className="text-xs text-[var(--naver-green)] font-medium"
+          className="text-xs text-primary font-medium"
         >
           변경
         </button>

@@ -117,7 +117,7 @@ export default function AddressSearchModal({
               onChange={(e) => setQuery(e.target.value)}
               onKeyDown={handleKeyDown}
               placeholder="장소, 주소 검색"
-              className="w-full h-10 px-3 bg-gray-100 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-[var(--naver-green)]"
+              className="w-full h-10 px-3 bg-gray-100 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-primary"
             />
             {query && (
               <button
@@ -134,7 +134,7 @@ export default function AddressSearchModal({
           <button
             onClick={handleSearch}
             disabled={isLoading || !query.trim()}
-            className="h-10 px-4 bg-[var(--naver-green)] text-white text-sm font-medium rounded-lg disabled:opacity-50"
+            className="h-10 px-4 bg-primary text-white text-sm font-medium rounded-lg disabled:opacity-50"
           >
             {isLoading ? <div className="spinner" style={{ borderTopColor: 'white' }} /> : '검색'}
           </button>

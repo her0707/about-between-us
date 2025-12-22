@@ -1,19 +1,6 @@
 @import "tailwindcss";
 
 :root {
-  --naver-green: #03C75A;
-  --naver-green-dark: #02b351;
-  --color-origin-a: #03C75A;
-  --color-origin-b: #FF5A5A;
-  --gray-100: #f5f5f5;
-  --gray-200: #e5e5e5;
-  --gray-300: #d4d4d4;
-  --gray-400: #a3a3a3;
-  --gray-500: #737373;
-  --gray-600: #525252;
-  --gray-700: #404040;
-  --gray-800: #262626;
-  --gray-900: #171717;
   --safe-area-top: env(safe-area-inset-top, 0px);
   --safe-area-bottom: env(safe-area-inset-bottom, 0px);
 }
@@ -21,6 +8,20 @@
 @theme inline {
   --color-background: #ffffff;
   --color-foreground: #171717;
+  --color-primary: #03C75A;
+  --color-primary-dark: #02b351;
+  --color-secondary: #FF5A5A;
+  --color-origin-a: #03C75A;
+  --color-origin-b: #FF5A5A;
+  --color-gray-100: #f5f5f5;
+  --color-gray-200: #e5e5e5;
+  --color-gray-300: #d4d4d4;
+  --color-gray-400: #a3a3a3;
+  --color-gray-500: #737373;
+  --color-gray-600: #525252;
+  --color-gray-700: #404040;
+  --color-gray-800: #262626;
+  --color-gray-900: #171717;
 }
 
 body {
@@ -62,8 +63,8 @@ body {
 .spinner {
   width: 18px;
   height: 18px;
-  border: 2px solid var(--gray-200);
-  border-top-color: var(--naver-green);
+  border: 2px solid var(--color-gray-200);
+  border-top-color: var(--color-primary);
   border-radius: 50%;
   animation: spin 0.7s linear infinite;
 }
