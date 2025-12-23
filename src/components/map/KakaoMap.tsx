@@ -1,5 +1,6 @@
 'use client';
 
+import type { CandidateArea } from '@/types/candidate';
 import type { Origin } from '@/types/origin';
 import { useEffect, useRef, useState } from 'react';
 
@@ -14,18 +15,22 @@ interface KakaoMapProps {
   originA?: Origin | null;
   originB?: Origin | null;
   middlePoint?: { lat: number; lng: number } | null;
+  candidateAreas?: CandidateArea[];
   places?: Place[];
   className?: string;
   onMapClick?: (lat: number, lng: number) => void;
+  onCandidateClick?: (candidate: CandidateArea) => void;
 }
 
 export default function KakaoMap({
   originA,
   originB,
   middlePoint,
+  candidateAreas,
   places,
   className,
   onMapClick,
+  onCandidateClick,
 }: KakaoMapProps) {
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<kakao.maps.Map | null>(null);
@@ -125,8 +130,8 @@ export default function KakaoMap({
       hasMarkers = true;
     }
 
-    // 중간 지점 마커
-    if (middlePoint) {
+    // 중간 지점 마커 (단일)
+    if (middlePoint && !candidateAreas) {
       const position = new window.kakao.maps.LatLng(middlePoint.lat, middlePoint.lng);
       const overlay = new window.kakao.maps.CustomOverlay({
         position,
@@ -137,6 +142,35 @@ export default function KakaoMap({
       overlaysRef.current.push(overlay);
 
       bounds.extend(position);
+      hasMarkers = true;
+    }
+
+    // 후보지 마커 (다중)
+    if (candidateAreas && candidateAreas.length > 0) {
+      candidateAreas.forEach((candidate, index) => {
+        const position = new window.kakao.maps.LatLng(candidate.lat, candidate.lng);
+        const isGeometric = candidate.type === 'geometric';
+        const bgColor = isGeometric ? '#FFB800' : '#03C75A';
+
+        const overlayContent = document.createElement('div');
+        overlayContent.innerHTML = `<div style="width:28px;height:28px;background:${bgColor};color:white;font-size:12px;font-weight:600;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 6px rgba(0,0,0,0.3);cursor:pointer;border:2px solid white;">${index + 1}</div>`;
+        overlayContent.style.cursor = 'pointer';
+
+        if (onCandidateClick) {
+          overlayContent.addEventListener('click', () => {
+            onCandidateClick(candidate);
+          });
+        }
+
+        const overlay = new window.kakao.maps.CustomOverlay({
+          position,
+          content: overlayContent,
+          yAnchor: 0.5,
+          map: mapRef.current || undefined,
+        });
+        overlaysRef.current.push(overlay);
+        bounds.extend(position);
+      });
       hasMarkers = true;
     }
 
@@ -159,7 +193,7 @@ export default function KakaoMap({
     if (hasMarkers && mapRef.current) {
       mapRef.current.setBounds(bounds, 60, 60, 60, 60);
     }
-  }, [isLoaded, originA, originB, middlePoint, places]);
+  }, [isLoaded, originA, originB, middlePoint, candidateAreas, places, onCandidateClick]);
 
   return (
     <div
