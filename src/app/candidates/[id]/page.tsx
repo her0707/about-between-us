@@ -1,12 +1,11 @@
 import { Suspense } from "react";
 import { fetchNearbyPlaces } from "@/services/placeService";
-import { parseDetailParams } from "@/lib/utils/parseSearchParams";
+import { parseDetailParams } from "@/utils/parseSearchParams";
 import CandidateDetailClient from "@/features/candidate-detail/CandidateDetailClient";
 import Spinner from "@/components/common/Spinner";
 import type { CategoryCode } from "@/types/candidate";
 
 interface CandidateDetailPageProps {
-  params: Promise<{ id: string }>;
   searchParams: Promise<{
     lat?: string;
     lng?: string;

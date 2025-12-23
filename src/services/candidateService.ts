@@ -1,9 +1,14 @@
 import {
+  KAKAO_API_CACHE_SECONDS,
+  MAX_SUBWAY_CANDIDATES,
+} from "@/constants/candidate";
+import {
   calculateAccessibilityScore,
   calculateGeometricMiddle,
   calculateSearchRadius,
   getDistanceKm,
-} from "@/lib/utils/candidateUtils";
+  isValidCoordinate,
+} from "@/utils/candidateUtils";
 import type { CandidateArea } from "@/types/candidate";
 
 interface KakaoPlace {
@@ -43,6 +48,10 @@ export async function fetchCandidates(
     return { candidates: [], error: "출발지 좌표가 필요합니다." };
   }
 
+  if (!isValidCoordinate(aLat, aLng) || !isValidCoordinate(bLat, bLng)) {
+    return { candidates: [], error: "유효하지 않은 좌표입니다." };
+  }
+
   const apiKey = process.env.KAKAO_REST_API_KEY;
   if (!apiKey) {
     return { candidates: [], error: "API 키가 설정되지 않았습니다." };
@@ -79,6 +88,7 @@ export async function fetchCandidates(
         headers: {
           Authorization: `KakaoAK ${apiKey}`,
         },
+        next: { revalidate: KAKAO_API_CACHE_SECONDS },
       }
     );
 
@@ -117,7 +127,7 @@ export async function fetchCandidates(
     const sortedSubways = candidates
       .slice(1)
       .sort((a, b) => b.accessibilityScore - a.accessibilityScore)
-      .slice(0, 4);
+      .slice(0, MAX_SUBWAY_CANDIDATES);
 
     return { candidates: [geometricCandidate, ...sortedSubways] };
   } catch (error) {

@@ -1,6 +1,29 @@
+import {
+  KOREA_LAT_MAX,
+  KOREA_LAT_MIN,
+  KOREA_LNG_MAX,
+  KOREA_LNG_MIN,
+  MAX_REFERENCE_DISTANCE_KM,
+  MAX_SEARCH_RADIUS_M,
+  MIN_SEARCH_RADIUS_M,
+  SEARCH_RADIUS_RATIO,
+} from "@/constants/candidate";
+
 interface Point {
   lat: number;
   lng: number;
+}
+
+/**
+ * 좌표가 유효한 범위 내에 있는지 검증
+ */
+export function isValidCoordinate(lat: number, lng: number): boolean {
+  return (
+    lat >= KOREA_LAT_MIN &&
+    lat <= KOREA_LAT_MAX &&
+    lng >= KOREA_LNG_MIN &&
+    lng <= KOREA_LNG_MAX
+  );
 }
 
 /**
@@ -43,9 +66,9 @@ export function calculateAccessibilityScore(
   const maxDist = Math.max(distA, distB);
   const balance = maxDist > 0 ? 1 - Math.abs(distA - distB) / maxDist : 1;
 
-  // 총 이동거리: 짧을수록 높은 점수 (50km 기준)
+  // 총 이동거리: 짧을수록 높은 점수
   const totalDistance = distA + distB;
-  const distanceScore = Math.max(0, 1 - totalDistance / 50);
+  const distanceScore = Math.max(0, 1 - totalDistance / MAX_REFERENCE_DISTANCE_KM);
 
   return Math.round(balance * 60 + distanceScore * 40);
 }
@@ -57,8 +80,8 @@ export function calculateAccessibilityScore(
  */
 export function calculateSearchRadius(originA: Point, originB: Point): number {
   const distanceAB = getDistanceKm(originA, originB);
-  const radius = distanceAB * 0.4 * 1000; // km -> m
-  return Math.min(Math.max(radius, 2000), 10000);
+  const radius = distanceAB * SEARCH_RADIUS_RATIO * 1000; // km -> m
+  return Math.min(Math.max(radius, MIN_SEARCH_RADIUS_M), MAX_SEARCH_RADIUS_M);
 }
 
 /**

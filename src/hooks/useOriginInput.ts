@@ -2,7 +2,7 @@
 
 import { useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
-import { useCurrentLocation } from "@/lib/utils/useCurrentLocation";
+import { useCurrentLocation } from "@/hooks/useCurrentLocation";
 import type { Origin } from "@/types/origin";
 
 interface SearchModalState {

@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 import { fetchCandidates } from "@/services/candidateService";
-import { parseOriginParams } from "@/lib/utils/parseSearchParams";
+import { parseOriginParams } from "@/utils/parseSearchParams";
 import CandidatesClient from "@/features/candidates/CandidatesClient";
 import Spinner from "@/components/common/Spinner";
 
