@@ -1,5 +1,3 @@
-'use client';
-
 interface Place {
   id: string;
   name: string;
